@@ -22,5 +22,8 @@ Repository = "https://github.com/stiermid/nnote"
 [project.scripts]
 nnote = "nnote.cli:cli"
 
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
 [tool.setuptools.packages.find]
 exclude = ["venv*"]
