@@ -8,7 +8,7 @@ from typing import Any
 
 
 CONFIG_FILE_NAME = "config.yaml"
-DEFAULT_NOTES_DIR = Path.home() / "notes"
+DEFAULT_NOTES_DIR = Path.home() / "nnotes"
 
 
 def get_config_path() -> Path:
