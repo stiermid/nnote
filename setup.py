@@ -13,7 +13,7 @@ setup(
     python_requires=">=3.6",
     entry_points={
         "console_scripts": [
-            "nnote=nnote.__main__:main",
+            "nnote=nnote.cli:cli",
         ],
     },
 )
