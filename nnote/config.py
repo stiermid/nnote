@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from .__version__ import APP_NAME
+import os
 import yaml
 from pathlib import Path
 from typing import Any
@@ -65,3 +66,7 @@ class Config:
     def notes_dir(self) -> Path | None:
         raw = self.get("notes_dir")
         return Path(raw).expanduser() if raw is not None else None
+
+    @property
+    def editor(self) -> str | None:
+        return self.get("editor") or os.environ.get("EDITOR")
