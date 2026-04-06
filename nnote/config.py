@@ -7,6 +7,7 @@ from typing import Any
 
 
 CONFIG_FILE_NAME = "config.yaml"
+DEFAULT_NOTES_DIR = Path.home() / "notes"
 
 
 def get_config_path() -> Path:
@@ -37,6 +38,11 @@ class Config:
 
         return cls(path, data)
 
+    def save(self) -> None:
+        """Write current config data to disk."""
+        with self._path.open("w", encoding="utf-8") as f:
+            yaml.dump(self._data, f, default_flow_style=False, allow_unicode=True)
+
     def get(self, *keys: str, default: Any = None) -> Any:
         """Retrieve a nested value by key path, returning default if missing."""
         node = self._data
@@ -47,3 +53,15 @@ class Config:
             if node is default:
                 return default
         return node
+
+    def set(self, *keys: str, value: Any) -> None:
+        """Set a nested value by key path, creating intermediate dicts as needed."""
+        node = self._data
+        for key in keys[:-1]:
+            node = node.setdefault(key, {})
+        node[keys[-1]] = value
+
+    @property
+    def notes_dir(self) -> Path | None:
+        raw = self.get("notes_dir")
+        return Path(raw).expanduser() if raw is not None else None
