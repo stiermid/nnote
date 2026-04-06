@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nnote"
+version = "0.1.0"
+description = "cli note taker"
+requires-python = ">=3.10"
+dependencies = [
+    "click>=8.0",
+    "pyyaml>=6.0",
+]
+
+[[project.authors]]
+name = "Agil Mammadov"
+email = "mammadovagil@tutamail.com"
+
+[project.urls]
+Repository = "https://github.com/stiermid/nnote"
+
+[project.scripts]
+nnote = "nnote.cli:cli"
+
+[tool.setuptools.packages.find]
+exclude = ["venv*"]
