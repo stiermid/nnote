@@ -14,7 +14,7 @@ pip install -e .
 nnote init
 ```
 
-Prompts for a notes directory (default: `~/notes`) and a default editor. Config is saved to `~/.config/nnote/config.yaml`. If `$EDITOR` is set in your environment, it will be used as the editor default.
+Prompts for a notes directory (default: `~/nnotes`) and a default editor. Config is saved to `~/.config/nnote/config.yaml`. If `$EDITOR` is set in your environment, it will be used as the editor default.
 
 ## Commands
 
@@ -54,7 +54,7 @@ nnote list -d work
 ```
 
 ```
-/home/user/notes
+/home/user/nnotes
 ├── work/
 │   ├── meeting
 │   └── standup
@@ -91,7 +91,7 @@ work/meeting [title]
 `~/.config/nnote/config.yaml`
 
 ```yaml
-notes_dir: /home/user/notes
+notes_dir: /home/user/nnotes
 editor: nvim
 ```
 
