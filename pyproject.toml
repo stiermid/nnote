@@ -26,4 +26,4 @@ nnote = "nnote.cli:cli"
 dev = ["pytest>=8.0"]
 
 [tool.setuptools.packages.find]
-exclude = ["venv*"]
+exclude = ["venv*", "tests*"]
