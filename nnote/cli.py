@@ -1,4 +1,5 @@
 import click
+import shutil
 import subprocess
 from pathlib import Path
 from .__version__ import VERSION
@@ -10,6 +11,21 @@ from .config import Config, DEFAULT_NOTES_DIR
 def cli():
     """nnote - a note-taking CLI."""
     pass
+
+
+def _resolve_note_path(config: Config, title: str, directory: str | None) -> Path:
+    if config.notes_dir is None:
+        raise click.ClickException("Notes directory not configured. Run `nnote init` first.")
+    base = config.notes_dir / directory if directory else config.notes_dir
+    return base / title
+
+
+def _open_in_editor(config: Config, path: Path) -> None:
+    if config.editor is None:
+        raise click.ClickException(
+            "No editor configured. Set 'editor' in config or the $EDITOR environment variable."
+        )
+    subprocess.call([config.editor, str(path)])
 
 
 @cli.command()
@@ -44,20 +60,70 @@ def init():
 def new(title, directory):
     """Create a new note and open it in the configured editor."""
     config = Config.load()
+    note_path = _resolve_note_path(config, title, directory)
+    note_path.parent.mkdir(parents=True, exist_ok=True)
+    note_path.touch()
+    _open_in_editor(config, note_path)
+
+
+@cli.command()
+@click.argument("title")
+@click.option("-d", "--directory", default=None, help="Subdirectory within notes dir")
+def view(title, directory):
+    """Print the contents of a note."""
+    config = Config.load()
+    note_path = _resolve_note_path(config, title, directory)
+
+    if not note_path.exists():
+        raise click.ClickException(f"Note not found: {note_path}")
+
+    click.echo(note_path.read_text(encoding="utf-8"), nl=False)
+
+
+@cli.command()
+@click.argument("title")
+@click.option("-d", "--directory", default=None, help="Subdirectory within notes dir")
+def edit(title, directory):
+    """Open an existing note in the configured editor."""
+    config = Config.load()
+    note_path = _resolve_note_path(config, title, directory)
+
+    if not note_path.exists():
+        raise click.ClickException(f"Note not found: {note_path}")
+
+    _open_in_editor(config, note_path)
+
+
+@cli.command()
+@click.argument("title", required=False, default=None)
+@click.option("-d", "--directory", default=None, help="Subdirectory within notes dir")
+def drop(title, directory):
+    """Remove a note or a directory."""
+    config = Config.load()
 
     if config.notes_dir is None:
         raise click.ClickException("Notes directory not configured. Run `nnote init` first.")
 
-    if config.editor is None:
-        raise click.ClickException(
-            "No editor configured. Set 'editor' in config or the $EDITOR environment variable."
-        )
+    if title is None and directory is None:
+        raise click.UsageError("Provide a note title, a directory (-d), or both.")
 
-    if directory:
-        note_path = config.notes_dir / directory / title
-        note_path.parent.mkdir(parents=True, exist_ok=True)
+    if title:
+        note_path = _resolve_note_path(config, title, directory)
+        if not note_path.exists():
+            raise click.ClickException(f"Note not found: {note_path}")
+        note_path.unlink()
+        click.echo(f"Removed: {note_path.name}")
     else:
-        note_path = config.notes_dir / title
+        dir_path = config.notes_dir / directory
+        if not dir_path.exists():
+            raise click.ClickException(f"Directory not found: {dir_path}")
 
-    note_path.touch()
-    subprocess.call([config.editor, str(note_path)])
+        contents = list(dir_path.iterdir())
+        if contents:
+            click.confirm(
+                f"'{directory}' contains {len(contents)} item(s). Remove anyway?",
+                abort=True,
+            )
+
+        shutil.rmtree(dir_path)
+        click.echo(f"Removed directory: {directory}")
