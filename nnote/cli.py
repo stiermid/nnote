@@ -1,6 +1,8 @@
 import click
+import difflib
 import shutil
 import subprocess
+from dataclasses import dataclass, field
 from pathlib import Path
 from .__version__ import VERSION
 from .config import Config, DEFAULT_NOTES_DIR
@@ -12,6 +14,10 @@ def cli():
     """nnote - a note-taking CLI."""
     pass
 
+
+# ---------------------------------------------------------------------------
+# Shared helpers
+# ---------------------------------------------------------------------------
 
 def _resolve_note_path(config: Config, title: str, directory: str | None) -> Path:
     if config.notes_dir is None:
@@ -27,6 +33,10 @@ def _open_in_editor(config: Config, path: Path) -> None:
         )
     subprocess.call([config.editor, str(path)])
 
+
+# ---------------------------------------------------------------------------
+# Commands
+# ---------------------------------------------------------------------------
 
 @cli.command()
 def init():
@@ -163,3 +173,114 @@ def drop(title, directory):
 
         shutil.rmtree(dir_path)
         click.echo(f"Removed directory: {directory}")
+
+
+# ---------------------------------------------------------------------------
+# Search
+# ---------------------------------------------------------------------------
+
+_TITLE_EXACT   = 100
+_TITLE_PREFIX  =  70
+_TITLE_SUBSTR  =  50
+_FUZZY_THRESHOLD = 0.6
+_FUZZY_WEIGHT    = 40
+_CONTENT_LINE_SCORE = 10
+_CONTENT_MAX_LINES  =  3
+
+
+@dataclass
+class _SearchResult:
+    rel_path: str
+    score: float
+    title_match: bool
+    matching_lines: list[tuple[int, str]] = field(default_factory=list)
+
+
+def _score_title(query: str, name: str) -> float:
+    q, n = query.lower(), name.lower()
+    if q == n:
+        return _TITLE_EXACT
+    if n.startswith(q):
+        return _TITLE_PREFIX
+    if q in n:
+        return _TITLE_SUBSTR
+    ratio = difflib.SequenceMatcher(None, q, n).ratio()
+    if ratio >= _FUZZY_THRESHOLD:
+        return ratio * _FUZZY_WEIGHT
+    return 0.0
+
+
+def _search_notes(root: Path, query: str) -> list[_SearchResult]:
+    results: list[_SearchResult] = []
+
+    for path in sorted(root.rglob("*")):
+        if not path.is_file():
+            continue
+
+        rel = str(path.relative_to(root))
+        title_score = _score_title(query, path.name)
+
+        matching_lines: list[tuple[int, str]] = []
+        try:
+            for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                if query.lower() in line.lower():
+                    matching_lines.append((lineno, line.strip()))
+        except (UnicodeDecodeError, OSError):
+            pass
+
+        content_score = min(len(matching_lines) * _CONTENT_LINE_SCORE, _CONTENT_LINE_SCORE * _CONTENT_MAX_LINES)
+        total = title_score + content_score
+
+        if total > 0:
+            results.append(_SearchResult(
+                rel_path=rel,
+                score=total,
+                title_match=title_score > 0,
+                matching_lines=matching_lines[:_CONTENT_MAX_LINES],
+            ))
+
+    results.sort(key=lambda r: r.score, reverse=True)
+    return results
+
+
+def _highlight(text: str, query: str) -> str:
+    lower = text.lower()
+    q = query.lower()
+    out, i = "", 0
+    while i < len(text):
+        if lower[i:i + len(q)] == q:
+            out += click.style(text[i:i + len(q)], bold=True, fg="yellow")
+            i += len(q)
+        else:
+            out += text[i]
+            i += 1
+    return out
+
+
+@cli.command()
+@click.argument("query")
+@click.option("-d", "--directory", default=None, help="Scope search to a subdirectory")
+def search(query, directory):
+    """Search notes by title and content."""
+    config = Config.load()
+
+    if config.notes_dir is None:
+        raise click.ClickException("Notes directory not configured. Run `nnote init` first.")
+
+    root = config.notes_dir / directory if directory else config.notes_dir
+
+    if not root.exists():
+        raise click.ClickException(f"Directory not found: {root}")
+
+    results = _search_notes(root, query)
+
+    if not results:
+        click.echo("No notes found.")
+        return
+
+    for result in results:
+        label = click.style(result.rel_path, bold=True)
+        tag = click.style(" [title]", fg="green") if result.title_match else ""
+        click.echo(f"{label}{tag}")
+        for lineno, line in result.matching_lines:
+            click.echo(f"  {click.style(str(lineno), dim=True)}: {_highlight(line, query)}")
