@@ -7,9 +7,24 @@ All notable changes to this project will be documented in this file.
 
 - **nnote**: Version string
 
+### CI
+
+- Replace changelog commit job with release notes update
+
+### Documentation
+
+- Add license section to README
+- Add changelog link to README
+
 ### Features
 
 - **commands**: Add move command
+
+### Miscellaneous
+
+- Add automated changelog generation with git-cliff
+- Configure README as PyPI long description
+- Release v0.1.2
 
 ### Testing
 
