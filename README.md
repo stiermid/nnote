@@ -107,10 +107,6 @@ editor: nvim
 
 The `editor` field can be any terminal editor command (`vim`, `nano`, `hx`, etc.). If omitted, `$EDITOR` is used.
 
-## Changelog
-
-See [CHANGELOG.md](https://github.com/stiermid/nnote/blob/master/CHANGELOG.md) for release history.
-
 ## License
 
 This project is licensed under the GNU General Public License v3.0 or later. See [LICENSE](LICENSE) for details.
