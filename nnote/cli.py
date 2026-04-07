@@ -7,6 +7,7 @@ from .commands.edit import edit
 from .commands.list import list_notes
 from .commands.drop import drop
 from .commands.search import search
+from .commands.move import move
 
 
 @click.group()
@@ -23,3 +24,4 @@ cli.add_command(edit)
 cli.add_command(list_notes)
 cli.add_command(drop)
 cli.add_command(search)
+cli.add_command(move)
