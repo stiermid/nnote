@@ -71,6 +71,16 @@ nnote drop standup -d work   # remove a note inside a subdirectory
 nnote drop -d work           # remove the entire directory
 ```
 
+### `nnote move <title> [<dest_title>] [-d <dir>] [--dest-dir <dir>]`
+
+Move or rename a note. Provide a new title to rename, `--dest-dir` to move to another subdirectory, or both.
+
+```bash
+nnote move todo done                        # rename
+nnote move standup -d work --dest-dir arch  # move to another subdirectory
+nnote move standup meeting -d work          # rename within a subdirectory
+```
+
 ### `nnote search <query> [-d <dir>]`
 
 Search notes by title and content. Results are ranked by relevance: exact title matches score highest, followed by prefix/substring/fuzzy title matches, then content hits. Matched terms are highlighted in the output.
