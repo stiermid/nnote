@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "nnote"
 version = "0.1.1"
 description = "cli note taker"
+readme = "README.md"
 license="GPL-3.0-or-later"
 requires-python = ">=3.10"
 dependencies = [
