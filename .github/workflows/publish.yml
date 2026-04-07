@@ -20,6 +20,29 @@ jobs:
       - name: Run tests
         run: pytest tests/
 
+  changelog:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --output CHANGELOG.md
+
+      - name: Commit changelog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git diff --cached --quiet || git commit -m "chore: update CHANGELOG for ${{ github.event.release.tag_name }}"
+          git push
+
   publish:
     needs: test
     runs-on: ubuntu-latest
