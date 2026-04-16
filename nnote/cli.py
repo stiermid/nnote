@@ -8,6 +8,7 @@ from .commands.list import list_notes
 from .commands.drop import drop
 from .commands.search import search
 from .commands.move import move
+from .commands.backup import backup
 
 
 @click.group()
@@ -25,3 +26,4 @@ cli.add_command(list_notes)
 cli.add_command(drop)
 cli.add_command(search)
 cli.add_command(move)
+cli.add_command(backup)
