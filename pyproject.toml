@@ -26,7 +26,7 @@ nnote = "nnote.cli:cli"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
-docs = ["sphinx>=7.0"]
+docs = ["sphinx>=7.0", "furo>=2024.0"]
 
 [tool.setuptools.packages.find]
 exclude = ["venv*", "tests*"]
