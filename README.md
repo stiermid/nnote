@@ -18,114 +18,16 @@ Prompts for a notes directory (default: `~/nnotes`) and a default editor. Config
 
 ## Commands
 
-### `nnote new [<title>] [-d <dir>]`
+- [`new`](docs/commands/new.md) — create a note (or a subdirectory)
+- [`view`](docs/commands/view.md) — print a note to stdout
+- [`edit`](docs/commands/edit.md) — open an existing note in the editor
+- [`list`](docs/commands/list.md) — display notes as a tree
+- [`drop`](docs/commands/drop.md) — remove a note or directory
+- [`move`](docs/commands/move.md) — rename or relocate a note
+- [`backup`](docs/commands/backup.md) — export notes to a `.tar.gz` archive
+- [`search`](docs/commands/search.md) — search notes by title and content
 
-Create a new note and open it in the configured editor. Use `-d` to place the note inside a subdirectory of your notes directory (created automatically if it doesn't exist).
-
-Omit the title and provide only `-d` to create a directory without opening an editor.
-
-```bash
-nnote new todo
-nnote new standup -d work
-nnote new -d archive
-```
-
-### `nnote view <title> [-d <dir>]`
-
-Print the contents of a note to stdout.
-
-```bash
-nnote view todo
-nnote view standup -d work
-```
-
-### `nnote edit <title> [-d <dir>]`
-
-Open an existing note in the configured editor. Errors if the note doesn't exist (use `new` to create it).
-
-```bash
-nnote edit todo
-```
-
-### `nnote list [-d <dir>]`
-
-Display all notes as a tree. Scope to a subdirectory with `-d`.
-
-```bash
-nnote list
-nnote list -d work
-```
-
-```
-/home/user/nnotes
-├── work/
-│   ├── meeting
-│   └── standup
-└── todo
-```
-
-### `nnote drop [<title>] [-d <dir>]`
-
-Remove a note or a directory. When dropping a directory, prompts for confirmation if it contains files.
-
-```bash
-nnote drop todo              # remove a note
-nnote drop standup -d work   # remove a note inside a subdirectory
-nnote drop -d work           # remove the entire directory
-```
-
-### `nnote move <title> [<dest_title>] [-d <dir>] [--dest-dir <dir>]`
-
-Move or rename a note. Provide a new title to rename, `--dest-dir` to move to another subdirectory, or both.
-
-```bash
-nnote move todo done                        # rename
-nnote move standup -d work --dest-dir arch  # move to another subdirectory
-nnote move standup meeting -d work          # rename within a subdirectory
-```
-
-### `nnote backup [<output_path>] [-d <dir>] [--include-config] [--dry-run] [--quiet]`
-
-Back up notes to a `.tar.gz` archive. If no output path is given, saves `nnote-backup-YYYY-MM-DD.tar.gz` in the current directory.
-
-- `-d` — scope the backup to a subdirectory
-- `--include-config` — also bundle `~/.config/nnote/config.yaml` into the archive
-- `--dry-run` — list files that would be included without writing anything
-- `--quiet` — suppress output (useful for scripting)
-
-```bash
-nnote backup                             # nnote-backup-2026-04-16.tar.gz in cwd
-nnote backup ~/backups/notes.tar.gz      # custom output path
-nnote backup -d work                     # only the 'work' subdirectory
-nnote backup --include-config            # include config file
-nnote backup --dry-run                   # preview without creating archive
-```
-
-### `nnote search <query> [-d <dir>]`
-
-Search notes by title and content. Results are ranked by relevance: exact title matches score highest, followed by prefix/substring/fuzzy title matches, then content hits. Matched terms are highlighted in the output.
-
-```bash
-nnote search meeting
-nnote search budget -d work
-```
-
-```
-work/meeting [title]
-  3: discussed the project budget
-  7: next meeting on friday
-```
-
-## Config file
-
-`~/.config/nnote/config.yaml`
-
-```yaml
-notes_dir: /home/user/nnotes
-editor: nvim
-```
-
-The `editor` field can be any terminal editor command (`vim`, `nano`, `hx`, etc.). If omitted, `$EDITOR` is used.
+See the [full documentation](docs/README.md) for details. Config file format is documented in [docs/configuration.md](docs/configuration.md).
 
 ## License
 
