@@ -25,6 +25,7 @@ your environment, it will be used as the editor default.
    :maxdepth: 1
    :caption: Commands
 
+   commands/init
    commands/new
    commands/view
    commands/edit
