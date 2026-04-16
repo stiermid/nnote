@@ -18,6 +18,28 @@ python -m nnote <command>
 nnote <command>
 ```
 
+Install extras for tests or docs:
+
+```bash
+pip install -e '.[dev]'   # pytest
+pip install -e '.[docs]'  # sphinx
+```
+
+## Testing
+
+Tests live in `tests/` and run with `pytest`. Run the full suite with `pytest`
+or a single file with `pytest tests/test_search.py`.
+
+## Docs
+
+Sphinx sources live in `docs/` (RST). Build the HTML site with:
+
+```bash
+sphinx-build -b html docs docs/_build/html
+```
+
+The site is also deployed to GitHub Pages.
+
 ## Architecture
 
 The app is split into three layers:
@@ -31,12 +53,13 @@ The app is split into three layers:
 One file per command. Each file defines a standalone `@click.command()` — no direct reference to `cli`. Commands import from `config`, `notes`, or `search` as needed.
 
 **Entry point** (`nnote/cli.py`)
-Defines the `cli` group and registers every command via `cli.add_command()`. This is the only file that knows about all commands.
+Defines the `cli` group and registers every command via `cli.add_command()`. This is the only file that knows about all commands. The `--version` flag reads `VERSION` from `nnote/__version__.py`.
 
 ## Adding a new command
 
 1. Create `nnote/commands/<name>.py` with a `@click.command()` function.
 2. Import and register it in `nnote/cli.py` with `cli.add_command(...)`.
+3. Add `docs/commands/<name>.rst` and link it from the toctree in `docs/index.rst`.
 
 ## Dependencies
 
