@@ -84,6 +84,23 @@ nnote move standup -d work --dest-dir arch  # move to another subdirectory
 nnote move standup meeting -d work          # rename within a subdirectory
 ```
 
+### `nnote backup [<output_path>] [-d <dir>] [--include-config] [--dry-run] [--quiet]`
+
+Back up notes to a `.tar.gz` archive. If no output path is given, saves `nnote-backup-YYYY-MM-DD.tar.gz` in the current directory.
+
+- `-d` — scope the backup to a subdirectory
+- `--include-config` — also bundle `~/.config/nnote/config.yaml` into the archive
+- `--dry-run` — list files that would be included without writing anything
+- `--quiet` — suppress output (useful for scripting)
+
+```bash
+nnote backup                             # nnote-backup-2026-04-16.tar.gz in cwd
+nnote backup ~/backups/notes.tar.gz      # custom output path
+nnote backup -d work                     # only the 'work' subdirectory
+nnote backup --include-config            # include config file
+nnote backup --dry-run                   # preview without creating archive
+```
+
 ### `nnote search <query> [-d <dir>]`
 
 Search notes by title and content. Results are ranked by relevance: exact title matches score highest, followed by prefix/substring/fuzzy title matches, then content hits. Matched terms are highlighted in the output.
