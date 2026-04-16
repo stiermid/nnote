@@ -8,4 +8,4 @@ release = _pkg_version("nnote")
 extensions = []
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
-html_theme = "alabaster"
+html_theme = "furo"
