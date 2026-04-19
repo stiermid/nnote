@@ -4,6 +4,16 @@ A minimal CLI note-taking tool. Notes are plain files stored in a directory of y
 
 ## Installation
 
+**Arch Linux (AUR)**
+
+```bash
+yay -S nnote
+```
+
+Or with any other AUR helper, or manually via `makepkg`.
+
+**From source**
+
 ```bash
 pip install -e .
 ```
