@@ -41,7 +41,8 @@ def backup(output_path, directory, include_config, dry_run, quiet):
 
     if output_path is None:
         filename = f"nnote-backup-{date.today()}.tar.gz"
-        output_path = Path.cwd() / filename
+        base = config.backup_dir or Path.cwd()
+        output_path = base / filename
     else:
         output_path = Path(output_path)
 

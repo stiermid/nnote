@@ -6,7 +6,8 @@ nnote backup
    nnote backup [<output_path>] [-d <dir>] [--include-config] [--dry-run] [--quiet]
 
 Back up notes to a ``.tar.gz`` archive. If no output path is given, saves
-``nnote-backup-YYYY-MM-DD.tar.gz`` in the current directory.
+``nnote-backup-YYYY-MM-DD.tar.gz`` in ``backup_dir`` (if configured) or the
+current directory.
 
 - ``-d`` — scope the backup to a subdirectory
 - ``--include-config`` — also bundle ``~/.config/nnote/config.yaml`` into the archive

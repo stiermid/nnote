@@ -70,3 +70,8 @@ class Config:
     @property
     def editor(self) -> str | None:
         return self.get("editor") or os.environ.get("EDITOR")
+
+    @property
+    def backup_dir(self) -> Path | None:
+        raw = self.get("backup_dir")
+        return Path(raw).expanduser() if raw is not None else None
