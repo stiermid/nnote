@@ -84,3 +84,15 @@ def test_editor_none_when_not_configured(tmp_path, monkeypatch):
     monkeypatch.delenv("EDITOR", raising=False)
     config = Config.load(tmp_path / "config.yaml")
     assert config.editor is None
+
+
+def test_backup_dir_property_expands_home(tmp_path):
+    cfg_file = tmp_path / "config.yaml"
+    cfg_file.write_text("backup_dir: ~/backups\n")
+    config = Config.load(cfg_file)
+    assert config.backup_dir == Path.home() / "backups"
+
+
+def test_backup_dir_none_when_not_set(tmp_path):
+    config = Config.load(tmp_path / "config.yaml")
+    assert config.backup_dir is None
