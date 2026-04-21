@@ -1,5 +1,9 @@
 # nnote
 
+<a href="https://repology.org/project/nnote/related">
+	<img src="https://repology.org/badge/vertical-allrepos/nnote.svg" alt="Packaging status" align="right">
+</a>
+
 A minimal CLI note-taking tool. Notes are plain files stored in a directory of your choice.
 
 ## Installation
