@@ -1,5 +1,8 @@
 # nnote
 
+[![PyPI downloads](https://img.shields.io/pypi/dm/nnote.svg)](https://pypi.org/project/nnote/)
+[![Github commits (since latest release)](https://img.shields.io/github/commits-since/stiermid/nnote/latest.svg)](https://github.com/stiermid/nnote)
+
 <a href="https://repology.org/project/nnote/related">
 	<img src="https://repology.org/badge/vertical-allrepos/nnote.svg" alt="Packaging status" align="right">
 </a>
