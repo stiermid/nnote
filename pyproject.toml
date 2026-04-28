@@ -19,6 +19,7 @@ name = "Agil Mammadov"
 email = "mammadovagil@tutamail.com"
 
 [project.urls]
+Documentation = "https://stiermid.github.io/nnote"
 Repository = "https://github.com/stiermid/nnote"
 
 [project.scripts]
