@@ -10,15 +10,24 @@ from ..config import Config
 @click.command()
 @click.argument("output_path", required=False, default=None)
 @click.option("-d", "--directory", default=None, help="Subdirectory to back up")
-@click.option("--include-config", is_flag=True, default=False, help="Include config file in backup")
-@click.option("--dry-run", is_flag=True, default=False, help="List files without creating archive")
+@click.option(
+    "--include-config",
+    is_flag=True,
+    default=False,
+    help="Include config file in backup",
+)
+@click.option(
+    "--dry-run", is_flag=True, default=False, help="List files without creating archive"
+)
 @click.option("--quiet", is_flag=True, default=False, help="Suppress output")
 def backup(output_path, directory, include_config, dry_run, quiet):
     """Back up notes to a tar.gz archive."""
     config = Config.load()
 
     if config.notes_dir is None:
-        raise click.ClickException("Notes directory not configured. Run `nnote init` first.")
+        raise click.ClickException(
+            "Notes directory not configured. Run `nnote init` first."
+        )
 
     root = config.notes_dir / directory if directory else config.notes_dir
 

@@ -5,6 +5,7 @@ from nnote.search import search_notes, highlight, _score_title
 
 # --- scoring unit tests ---
 
+
 def test_score_exact_match():
     assert _score_title("todo", "todo") == 100
 
@@ -31,6 +32,7 @@ def test_score_case_insensitive():
 
 
 # --- search_notes integration tests ---
+
 
 def test_finds_exact_title_match(tmp_path):
     (tmp_path / "todo").write_text("buy milk")
@@ -84,6 +86,7 @@ def test_skips_unreadable_files(tmp_path):
 
 
 # --- highlight tests ---
+
 
 def test_highlight_wraps_match():
     result = highlight("hello world", "world")

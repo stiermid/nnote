@@ -23,6 +23,7 @@ def invoke(cfg, *args):
 
 # ── happy paths ────────────────────────────────────────────────────────────────
 
+
 def test_rename_note(env):
     cfg, notes_dir = env
     (notes_dir / "old").write_text("content")
@@ -75,6 +76,7 @@ def test_dest_dir_created_if_missing(env):
 
 
 # ── error paths ────────────────────────────────────────────────────────────────
+
 
 def test_error_source_not_found(env):
     cfg, _ = env
