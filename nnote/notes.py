@@ -6,7 +6,9 @@ from .config import Config
 
 def resolve_note_path(config: Config, title: str, directory: str | None) -> Path:
     if config.notes_dir is None:
-        raise click.ClickException("Notes directory not configured. Run `nnote init` first.")
+        raise click.ClickException(
+            "Notes directory not configured. Run `nnote init` first."
+        )
     base = config.notes_dir / directory if directory else config.notes_dir
     return base / title
 

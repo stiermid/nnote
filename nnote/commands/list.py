@@ -25,7 +25,9 @@ def list_notes(directory):
     config = Config.load()
 
     if config.notes_dir is None:
-        raise click.ClickException("Notes directory not configured. Run `nnote init` first.")
+        raise click.ClickException(
+            "Notes directory not configured. Run `nnote init` first."
+        )
 
     root = config.notes_dir / directory if directory else config.notes_dir
 

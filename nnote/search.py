@@ -4,13 +4,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 
-_TITLE_EXACT        = 100
-_TITLE_PREFIX       =  70
-_TITLE_SUBSTR       =  50
-_FUZZY_THRESHOLD    = 0.6
-_FUZZY_WEIGHT       =  40
-_CONTENT_LINE_SCORE =  10
-_CONTENT_MAX_LINES  =   3
+_TITLE_EXACT = 100
+_TITLE_PREFIX = 70
+_TITLE_SUBSTR = 50
+_FUZZY_THRESHOLD = 0.6
+_FUZZY_WEIGHT = 40
+_CONTENT_LINE_SCORE = 10
+_CONTENT_MAX_LINES = 3
 
 
 @dataclass
@@ -47,7 +47,9 @@ def search_notes(root: Path, query: str) -> list[SearchResult]:
 
         matching_lines: list[tuple[int, str]] = []
         try:
-            for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            for lineno, line in enumerate(
+                path.read_text(encoding="utf-8").splitlines(), 1
+            ):
                 if query.lower() in line.lower():
                     matching_lines.append((lineno, line.strip()))
         except (UnicodeDecodeError, OSError):
@@ -60,12 +62,14 @@ def search_notes(root: Path, query: str) -> list[SearchResult]:
         total = title_score + content_score
 
         if total > 0:
-            results.append(SearchResult(
-                rel_path=rel,
-                score=total,
-                title_match=title_score > 0,
-                matching_lines=matching_lines[:_CONTENT_MAX_LINES],
-            ))
+            results.append(
+                SearchResult(
+                    rel_path=rel,
+                    score=total,
+                    title_match=title_score > 0,
+                    matching_lines=matching_lines[:_CONTENT_MAX_LINES],
+                )
+            )
 
     results.sort(key=lambda r: r.score, reverse=True)
     return results
@@ -76,8 +80,8 @@ def highlight(text: str, query: str) -> str:
     q = query.lower()
     out, i = "", 0
     while i < len(text):
-        if lower[i:i + len(q)] == q:
-            out += click.style(text[i:i + len(q)], bold=True, fg="yellow")
+        if lower[i : i + len(q)] == q:
+            out += click.style(text[i : i + len(q)], bold=True, fg="yellow")
             i += len(q)
         else:
             out += text[i]
