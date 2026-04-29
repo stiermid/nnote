@@ -12,7 +12,9 @@ def drop(title, directory):
     config = Config.load()
 
     if config.notes_dir is None:
-        raise click.ClickException("Notes directory not configured. Run `nnote init` first.")
+        raise click.ClickException(
+            "Notes directory not configured. Run `nnote init` first."
+        )
 
     if title is None and directory is None:
         raise click.UsageError("Provide a note title, a directory (-d), or both.")

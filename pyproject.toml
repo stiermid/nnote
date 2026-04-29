@@ -35,3 +35,8 @@ docs = [
 
 [tool.uv.build-backend]
 module-root = ""
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.12",
+]

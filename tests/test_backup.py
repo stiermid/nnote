@@ -27,6 +27,7 @@ def invoke(cfg, *args):
 
 # ── happy paths ────────────────────────────────────────────────────────────────
 
+
 def test_backup_creates_archive(env, tmp_path):
     cfg, notes_dir = env
     (notes_dir / "note1").write_text("hello")
@@ -67,21 +68,27 @@ def test_backup_include_config(env, tmp_path):
     fake_config.write_text("notes_dir: /tmp/notes\n")
 
     out = tmp_path / "backup.tar.gz"
-    with patch("nnote.commands.backup.Config") as MockConfig, \
-         patch("nnote.commands.backup.Path") as MockPath:
+    with (
+        patch("nnote.commands.backup.Config") as MockConfig,
+        patch("nnote.commands.backup.Path") as MockPath,
+    ):
         MockConfig.load.return_value = cfg
         # Patch the config path construction inside backup
         real_path = __import__("pathlib").Path
+
         def path_side_effect(*args):
             if args == ("~/.config/nnote/config.yaml",):
                 p = real_path(fake_config)
                 p_expanded = real_path(fake_config)
+
                 # return a mock that .expanduser() returns real fake_config path
                 class FakeConfigPath:
                     def expanduser(self):
                         return real_path(fake_config)
+
                 return FakeConfigPath()
             return real_path(*args)
+
         MockPath.side_effect = path_side_effect
         MockPath.cwd = real_path.cwd
 
@@ -127,17 +134,21 @@ def test_backup_default_filename_uses_today(env, tmp_path):
     today = date.today().isoformat()
     expected_name = f"nnote-backup-{today}.tar.gz"
 
-    with patch("nnote.commands.backup.Config") as MockConfig, \
-         patch("nnote.commands.backup.Path") as MockPath:
+    with (
+        patch("nnote.commands.backup.Config") as MockConfig,
+        patch("nnote.commands.backup.Path") as MockPath,
+    ):
         MockConfig.load.return_value = cfg
         real_path = __import__("pathlib").Path
         created_paths = []
 
         def path_side_effect(*args):
             if args == ("~/.config/nnote/config.yaml",):
+
                 class FakeConfigPath:
                     def expanduser(self):
                         return real_path("/nonexistent/config.yaml")
+
                 return FakeConfigPath()
             p = real_path(*args)
             created_paths.append(p)
@@ -165,6 +176,7 @@ def test_backup_output_message(env, tmp_path):
 
 
 # ── error paths ────────────────────────────────────────────────────────────────
+
 
 def test_error_notes_dir_not_configured(tmp_path):
     cfg = Config(tmp_path / "config.yaml", {})

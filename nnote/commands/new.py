@@ -13,7 +13,9 @@ def new(title, directory):
         if directory is None:
             raise click.UsageError("Provide a title or a directory with -d.")
         if config.notes_dir is None:
-            raise click.ClickException("Notes directory not configured. Run `nnote init` first.")
+            raise click.ClickException(
+                "Notes directory not configured. Run `nnote init` first."
+            )
         (config.notes_dir / directory).mkdir(parents=True, exist_ok=True)
         return
     note_path = resolve_note_path(config, title, directory)

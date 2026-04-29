@@ -11,7 +11,9 @@ def search(query, directory):
     config = Config.load()
 
     if config.notes_dir is None:
-        raise click.ClickException("Notes directory not configured. Run `nnote init` first.")
+        raise click.ClickException(
+            "Notes directory not configured. Run `nnote init` first."
+        )
 
     root = config.notes_dir / directory if directory else config.notes_dir
 
@@ -29,4 +31,6 @@ def search(query, directory):
         tag = click.style(" [title]", fg="green") if result.title_match else ""
         click.echo(f"{label}{tag}")
         for lineno, line in result.matching_lines:
-            click.echo(f"  {click.style(str(lineno), dim=True)}: {highlight(line, query)}")
+            click.echo(
+                f"  {click.style(str(lineno), dim=True)}: {highlight(line, query)}"
+            )
