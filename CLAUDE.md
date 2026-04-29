@@ -5,37 +5,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development setup
 
 ```bash
-python -m venv venv
-source venv/bin/activate
-pip install -e .
+uv sync
 ```
 
 Run the CLI directly during development:
 
 ```bash
-python -m nnote <command>
-# or after pip install -e .:
-nnote <command>
+uv run nnote <command>
+# or
+uv run python -m nnote <command>
 ```
 
 Install extras for tests or docs:
 
 ```bash
-pip install -e '.[dev]'   # pytest
-pip install -e '.[docs]'  # sphinx
+uv sync --extra dev    # pytest
+uv sync --extra docs   # sphinx
 ```
 
 ## Testing
 
-Tests live in `tests/` and run with `pytest`. Run the full suite with `pytest`
-or a single file with `pytest tests/test_search.py`.
+Tests live in `tests/` and run with `pytest`. Run the full suite with:
+
+```bash
+uv run pytest
+```
+
+or a single file with `uv run pytest tests/test_search.py`.
 
 ## Docs
 
 Sphinx sources live in `docs/` (RST). Build the HTML site with:
 
 ```bash
-sphinx-build -b html docs docs/_build/html
+uv run sphinx-build -b html docs docs/_build/html
 ```
 
 The site is also deployed to GitHub Pages.

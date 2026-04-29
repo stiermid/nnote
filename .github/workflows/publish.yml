@@ -10,15 +10,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.10"
 
       - name: Install with dev dependencies
-        run: pip install -e ".[dev]"
+        run: uv sync --extra dev
 
       - name: Run tests
-        run: pytest tests/
+        run: uv run pytest tests/
 
   publish:
     needs: test
@@ -30,14 +30,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.10"
 
       - name: Build
-        run: |
-          pip install build
-          python -m build
+        run: uv build
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
