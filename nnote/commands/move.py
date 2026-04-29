@@ -13,17 +13,23 @@ def move(title, dest_title, directory, dest_dir):
     config = Config.load()
 
     if config.notes_dir is None:
-        raise click.ClickException("Notes directory not configured. Run `nnote init` first.")
+        raise click.ClickException(
+            "Notes directory not configured. Run `nnote init` first."
+        )
 
     if dest_title is None and dest_dir is None:
-        raise click.UsageError("Provide a new title and/or a destination directory (--dest-dir).")
+        raise click.UsageError(
+            "Provide a new title and/or a destination directory (--dest-dir)."
+        )
 
     src = resolve_note_path(config, title, directory)
     if not src.exists():
         raise click.ClickException(f"Note not found: {src}")
 
     new_title = dest_title if dest_title is not None else title
-    dst = resolve_note_path(config, new_title, dest_dir if dest_dir is not None else directory)
+    dst = resolve_note_path(
+        config, new_title, dest_dir if dest_dir is not None else directory
+    )
 
     if dst == src:
         raise click.ClickException("Source and destination are the same.")
