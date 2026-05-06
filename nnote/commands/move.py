@@ -1,13 +1,27 @@
 import click
 from ..config import Config
 from ..notes import resolve_note_path
+from ..completions import complete_note_titles, complete_directories
 
 
 @click.command()
-@click.argument("title")
-@click.argument("dest_title", required=False, default=None)
-@click.option("-d", "--directory", default=None, help="Source subdirectory")
-@click.option("--dest-dir", default=None, help="Destination subdirectory")
+@click.argument("title", shell_complete=complete_note_titles)
+@click.argument(
+    "dest_title", required=False, default=None, shell_complete=complete_note_titles
+)
+@click.option(
+    "-d",
+    "--directory",
+    default=None,
+    help="Source subdirectory",
+    shell_complete=complete_directories,
+)
+@click.option(
+    "--dest-dir",
+    default=None,
+    help="Destination subdirectory",
+    shell_complete=complete_directories,
+)
 def move(title, dest_title, directory, dest_dir):
     """Move or rename a note."""
     config = Config.load()

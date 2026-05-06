@@ -1,11 +1,18 @@
 import click
 from ..config import Config
 from ..notes import resolve_note_path
+from ..completions import complete_note_titles, complete_directories
 
 
 @click.command()
-@click.argument("title")
-@click.option("-d", "--directory", default=None, help="Subdirectory within notes dir")
+@click.argument("title", shell_complete=complete_note_titles)
+@click.option(
+    "-d",
+    "--directory",
+    default=None,
+    help="Subdirectory within notes dir",
+    shell_complete=complete_directories,
+)
 def view(title, directory):
     """Print the contents of a note."""
     config = Config.load()
