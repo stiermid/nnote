@@ -26,11 +26,11 @@ _COMPLETE_CLASS = {
 
 
 def _detect_shell():
-    import shellingham
+    import os
 
-    shell, _ = shellingham.detect_shell()
+    shell = Path(os.environ.get("SHELL", "")).name
     if shell not in _SUPPORTED_SHELLS:
-        raise click.ClickException(f"Unsupported shell: {shell}")
+        raise click.ClickException(f"Unsupported shell: {shell or '(unknown)'}")
     return shell
 
 
