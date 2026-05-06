@@ -9,6 +9,7 @@ from .commands.drop import drop
 from .commands.search import search
 from .commands.move import move
 from .commands.backup import backup
+from .commands.completion import completion
 
 
 @click.group()
@@ -27,3 +28,4 @@ cli.add_command(drop)
 cli.add_command(search)
 cli.add_command(move)
 cli.add_command(backup)
+cli.add_command(completion)

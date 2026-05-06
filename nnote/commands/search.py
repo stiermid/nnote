@@ -1,11 +1,12 @@
 import click
 from ..config import Config
 from ..search import search_notes, highlight
+from ..completions import complete_directories
 
 
 @click.command()
 @click.argument("query")
-@click.option("-d", "--directory", default=None, help="Scope search to a subdirectory")
+@click.option("-d", "--directory", default=None, help="Scope search to a subdirectory", shell_complete=complete_directories)
 def search(query, directory):
     """Search notes by title and content."""
     config = Config.load()

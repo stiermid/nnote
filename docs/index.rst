@@ -44,6 +44,7 @@ your environment, it will be used as the editor default.
    commands/move
    commands/backup
    commands/search
+   commands/completion
 
 .. toctree::
    :maxdepth: 1
