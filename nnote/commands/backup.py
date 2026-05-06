@@ -10,7 +10,13 @@ from ..completions import complete_directories
 
 @click.command()
 @click.argument("output_path", required=False, default=None)
-@click.option("-d", "--directory", default=None, help="Subdirectory to back up", shell_complete=complete_directories)
+@click.option(
+    "-d",
+    "--directory",
+    default=None,
+    help="Subdirectory to back up",
+    shell_complete=complete_directories,
+)
 @click.option(
     "--include-config",
     is_flag=True,

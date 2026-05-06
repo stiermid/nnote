@@ -6,8 +6,16 @@ from ..completions import complete_note_titles, complete_directories
 
 
 @click.command()
-@click.argument("title", required=False, default=None, shell_complete=complete_note_titles)
-@click.option("-d", "--directory", default=None, help="Subdirectory within notes dir", shell_complete=complete_directories)
+@click.argument(
+    "title", required=False, default=None, shell_complete=complete_note_titles
+)
+@click.option(
+    "-d",
+    "--directory",
+    default=None,
+    help="Subdirectory within notes dir",
+    shell_complete=complete_directories,
+)
 def drop(title, directory):
     """Remove a note or a directory."""
     config = Config.load()

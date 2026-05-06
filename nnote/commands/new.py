@@ -6,7 +6,13 @@ from ..completions import complete_directories
 
 @click.command()
 @click.argument("title", required=False, default=None)
-@click.option("-d", "--directory", default=None, help="Subdirectory within notes dir", shell_complete=complete_directories)
+@click.option(
+    "-d",
+    "--directory",
+    default=None,
+    help="Subdirectory within notes dir",
+    shell_complete=complete_directories,
+)
 def new(title, directory):
     """Create a new note and open it in the configured editor."""
     config = Config.load()

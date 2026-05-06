@@ -20,7 +20,13 @@ def _print_tree(root: Path, prefix: str = "") -> int:
 
 
 @click.command(name="list")
-@click.option("-d", "--directory", default=None, help="Subdirectory to list", shell_complete=complete_directories)
+@click.option(
+    "-d",
+    "--directory",
+    default=None,
+    help="Subdirectory to list",
+    shell_complete=complete_directories,
+)
 def list_notes(directory):
     """List notes and directories."""
     config = Config.load()
