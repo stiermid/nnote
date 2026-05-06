@@ -7,20 +7,26 @@ Shell completion
 Installing
 ----------
 
-Run once to append the activation line to your shell config automatically:
+Run once to write a completion script to the appropriate XDG directory for
+your shell:
 
 .. code-block:: bash
 
    nnote --install-completion
 
-To inspect the line before installing, use:
+This does **not** modify any shell config file. The script is placed in:
+
+- **bash** — ``~/.local/share/bash-completion/completions/nnote``
+- **zsh** — ``~/.local/share/zsh/site-functions/_nnote``
+- **fish** — ``~/.config/fish/completions/nnote.fish``
+
+To inspect the script before installing, use:
 
 .. code-block:: bash
 
    nnote --show-completion
 
-Then restart your shell (or ``source`` the config file) for the change to
-take effect.
+Restart your shell for the change to take effect.
 
 What gets completed
 -------------------
