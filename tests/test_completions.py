@@ -3,7 +3,9 @@ from unittest.mock import patch
 
 import pytest
 from click.shell_completion import CompletionItem
+from click.testing import CliRunner
 
+from nnote.cli import cli
 from nnote.completions import complete_note_titles, complete_directories
 from nnote.config import Config
 
@@ -30,6 +32,9 @@ def _make_notes(notes_dir: Path, files, dirs=()):
 @pytest.fixture
 def cfg(tmp_path):
     return _config_with_notes_dir(tmp_path)
+
+
+# --- complete_note_titles ---
 
 
 def test_complete_note_titles_returns_matching_files(cfg):
@@ -75,6 +80,22 @@ def test_complete_note_titles_path_style_dir_prefix(cfg):
     assert {r.value for r in results} == {"work/"}
 
 
+def test_complete_note_titles_missing_notes_dir_returns_empty(tmp_path):
+    cfg = Config.load(tmp_path / "config.yaml")
+    with patch("nnote.completions.Config.load", return_value=cfg):
+        results = complete_note_titles(_FakeCtx(), None, "")
+    assert results == []
+
+
+def test_complete_note_titles_exception_returns_empty():
+    with patch("nnote.completions.Config.load", side_effect=RuntimeError("boom")):
+        results = complete_note_titles(_FakeCtx(), None, "")
+    assert results == []
+
+
+# --- complete_directories ---
+
+
 def test_complete_directories_returns_subdirs(cfg):
     _make_notes(cfg.notes_dir, ["note"], dirs=["work", "personal"])
     with patch("nnote.completions.Config.load", return_value=cfg):
@@ -93,14 +114,32 @@ def test_complete_directories_filters_by_prefix(cfg):
     assert "work" not in names
 
 
-def test_complete_note_titles_missing_notes_dir_returns_empty(tmp_path):
-    cfg = Config.load(tmp_path / "config.yaml")
-    with patch("nnote.completions.Config.load", return_value=cfg):
-        results = complete_note_titles(_FakeCtx(), None, "")
-    assert results == []
+# --- --show-completion / --install-completion ---
 
 
-def test_complete_note_titles_exception_returns_empty():
-    with patch("nnote.completions.Config.load", side_effect=RuntimeError("boom")):
-        results = complete_note_titles(_FakeCtx(), None, "")
-    assert results == []
+def test_show_completion():
+    with patch("nnote.completions._detect_shell", return_value="zsh"):
+        result = CliRunner().invoke(cli, ["--show-completion"])
+    assert result.exit_code == 0
+    assert "_NNOTE_COMPLETE" in result.output
+
+
+def test_install_completion(tmp_path):
+    script_file = tmp_path / "_nnote"
+    with patch("nnote.completions._detect_shell", return_value="zsh"):
+        with patch("nnote.completions._COMPLETION_FILE", {"zsh": script_file}):
+            result = CliRunner().invoke(cli, ["--install-completion"])
+    assert result.exit_code == 0
+    assert script_file.exists()
+    assert "_NNOTE_COMPLETE" in script_file.read_text()
+
+
+def test_install_completion_idempotent(tmp_path):
+    script_file = tmp_path / "_nnote"
+    script_file.write_text("# existing script\n")
+    with patch("nnote.completions._detect_shell", return_value="zsh"):
+        with patch("nnote.completions._COMPLETION_FILE", {"zsh": script_file}):
+            result = CliRunner().invoke(cli, ["--install-completion"])
+    assert result.exit_code == 0
+    assert "already installed" in result.output
+    assert script_file.read_text() == "# existing script\n"

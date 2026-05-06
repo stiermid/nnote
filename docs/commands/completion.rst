@@ -1,45 +1,33 @@
-completion
-==========
+Shell completion
+================
 
-.. code-block:: none
+``nnote`` supports tab completion for note titles and subdirectory names in
+**bash**, **zsh**, and **fish**.
 
-   nnote completion SHELL
+Installing
+----------
 
-Print the shell activation line needed to enable tab completion for ``nnote``.
-
-``SHELL`` must be one of ``bash``, ``zsh``, or ``fish``.
-
-Once the line is added to your shell config and the shell is restarted (or the
-config is sourced), pressing :kbd:`Tab` after a command will complete note
-titles and subdirectory names dynamically.
-
-Examples
---------
-
-**bash** — add to ``~/.bashrc``:
+Run once to append the activation line to your shell config automatically:
 
 .. code-block:: bash
 
-   eval "$(_NNOTE_COMPLETE=bash_source nnote)"
+   nnote --install-completion
 
-**zsh** — add to ``~/.zshrc``:
+To inspect the line before installing, use:
 
-.. code-block:: zsh
+.. code-block:: bash
 
-   eval "$(_NNOTE_COMPLETE=zsh_source nnote)"
+   nnote --show-completion
 
-**fish** — add to ``~/.config/fish/config.fish``:
-
-.. code-block:: fish
-
-   eval (env _NNOTE_COMPLETE=fish_source nnote)
+Then restart your shell (or ``source`` the config file) for the change to
+take effect.
 
 What gets completed
 -------------------
 
-- **Note titles** — for ``edit``, ``view``, ``drop``, and ``move`` (both
-  source and destination title arguments). Completion respects the ``-d``
-  option: if ``-d mydir`` is already on the command line, only notes inside
-  ``mydir/`` are suggested.
+- **Note titles** — for ``edit``, ``view``, ``drop``, and ``move``.
+  Both bare filenames (``note``) and path-style input (``dir1/note``) are
+  supported; typing ``dir1/`` and pressing :kbd:`Tab` lists notes inside
+  that subdirectory.
 - **Subdirectory names** — for the ``-d`` / ``--directory`` option on all
   commands, and ``--dest-dir`` on ``move``.

@@ -9,11 +9,27 @@ from .commands.drop import drop
 from .commands.search import search
 from .commands.move import move
 from .commands.backup import backup
-from .commands.completion import completion
+from .completions import show_completion_callback, install_completion_callback
 
 
 @click.group()
 @click.version_option(version=VERSION, prog_name="nnote")
+@click.option(
+    "--show-completion",
+    is_flag=True,
+    is_eager=True,
+    expose_value=False,
+    callback=show_completion_callback,
+    help="Print the shell activation line for tab completion.",
+)
+@click.option(
+    "--install-completion",
+    is_flag=True,
+    is_eager=True,
+    expose_value=False,
+    callback=install_completion_callback,
+    help="Install tab completion for the current shell.",
+)
 def cli():
     """nnote - a note-taking CLI."""
     pass
@@ -28,4 +44,3 @@ cli.add_command(drop)
 cli.add_command(search)
 cli.add_command(move)
 cli.add_command(backup)
-cli.add_command(completion)
