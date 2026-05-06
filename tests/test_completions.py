@@ -42,14 +42,14 @@ def test_complete_note_titles_returns_matching_files(cfg):
     assert "beta" not in names
 
 
-def test_complete_note_titles_empty_prefix_returns_all(cfg):
-    _make_notes(cfg.notes_dir, ["x", "y"])
+def test_complete_note_titles_empty_prefix_returns_files_and_dirs(cfg):
+    _make_notes(cfg.notes_dir, ["x", "y"], dirs=["subdir"])
     with patch("nnote.completions.Config.load", return_value=cfg):
         results = complete_note_titles(_FakeCtx(), None, "")
-    assert {r.value for r in results} == {"x", "y"}
+    assert {r.value for r in results} == {"x", "y", "subdir/"}
 
 
-def test_complete_note_titles_respects_directory(cfg):
+def test_complete_note_titles_respects_directory_flag(cfg):
     subdir = cfg.notes_dir / "work"
     _make_notes(subdir, ["report", "review"])
     _make_notes(cfg.notes_dir, ["readme"])
@@ -60,13 +60,19 @@ def test_complete_note_titles_respects_directory(cfg):
     assert "readme" not in names
 
 
-def test_complete_note_titles_no_dirs_in_results(cfg):
-    _make_notes(cfg.notes_dir, ["note"], dirs=["subdir"])
+def test_complete_note_titles_path_style(cfg):
+    subdir = cfg.notes_dir / "work"
+    _make_notes(subdir, ["report", "review"])
     with patch("nnote.completions.Config.load", return_value=cfg):
-        results = complete_note_titles(_FakeCtx(), None, "")
-    names = [r.value for r in results]
-    assert "subdir" not in names
-    assert "note" in names
+        results = complete_note_titles(_FakeCtx(), None, "work/re")
+    assert {r.value for r in results} == {"work/report", "work/review"}
+
+
+def test_complete_note_titles_path_style_dir_prefix(cfg):
+    _make_notes(cfg.notes_dir, [], dirs=["work", "personal"])
+    with patch("nnote.completions.Config.load", return_value=cfg):
+        results = complete_note_titles(_FakeCtx(), None, "w")
+    assert {r.value for r in results} == {"work/"}
 
 
 def test_complete_directories_returns_subdirs(cfg):
