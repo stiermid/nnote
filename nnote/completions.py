@@ -1,7 +1,12 @@
 from pathlib import Path
 
 import click
-from click.shell_completion import BashComplete, ZshComplete, FishComplete, CompletionItem
+from click.shell_completion import (
+    BashComplete,
+    ZshComplete,
+    FishComplete,
+    CompletionItem,
+)
 
 from .config import Config
 
