@@ -117,29 +117,29 @@ def test_complete_directories_filters_by_prefix(cfg):
 # --- --show-completion / --install-completion ---
 
 
-def test_show_completion(tmp_path):
+def test_show_completion():
     with patch("nnote.completions._detect_shell", return_value="zsh"):
         result = CliRunner().invoke(cli, ["--show-completion"])
     assert result.exit_code == 0
-    assert "_NNOTE_COMPLETE=zsh_source" in result.output
+    assert "_NNOTE_COMPLETE" in result.output
 
 
 def test_install_completion(tmp_path):
-    config_file = tmp_path / ".zshrc"
+    script_file = tmp_path / "_nnote"
     with patch("nnote.completions._detect_shell", return_value="zsh"):
-        with patch("nnote.completions._SHELL_CONFIG", {"zsh": config_file}):
+        with patch("nnote.completions._COMPLETION_FILE", {"zsh": script_file}):
             result = CliRunner().invoke(cli, ["--install-completion"])
     assert result.exit_code == 0
-    assert "_NNOTE_COMPLETE=zsh_source" in config_file.read_text()
+    assert script_file.exists()
+    assert "_NNOTE_COMPLETE" in script_file.read_text()
 
 
 def test_install_completion_idempotent(tmp_path):
-    config_file = tmp_path / ".zshrc"
-    line = 'eval "$(_NNOTE_COMPLETE=zsh_source nnote)"'
-    config_file.write_text(f"{line}\n")
+    script_file = tmp_path / "_nnote"
+    script_file.write_text("# existing script\n")
     with patch("nnote.completions._detect_shell", return_value="zsh"):
-        with patch("nnote.completions._SHELL_CONFIG", {"zsh": config_file}):
+        with patch("nnote.completions._COMPLETION_FILE", {"zsh": script_file}):
             result = CliRunner().invoke(cli, ["--install-completion"])
     assert result.exit_code == 0
     assert "already installed" in result.output
-    assert config_file.read_text().count(line) == 1
+    assert script_file.read_text() == "# existing script\n"
