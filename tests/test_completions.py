@@ -6,7 +6,11 @@ from click.shell_completion import CompletionItem
 from click.testing import CliRunner
 
 from nnote.cli import cli
-from nnote.completions import complete_note_titles, complete_directories, _zsh_install_path
+from nnote.completions import (
+    complete_note_titles,
+    complete_directories,
+    _zsh_install_path,
+)
 from nnote.config import Config
 
 
@@ -175,7 +179,9 @@ def test_zsh_install_path_picks_first_writable_home_fpath_dir(tmp_path):
 
 def test_zsh_install_path_falls_back_to_xdg_when_no_home_fpath(tmp_path):
     mock_result = MagicMock()
-    mock_result.stdout = "/usr/share/zsh/functions\n/usr/local/share/zsh/site-functions\n"
+    mock_result.stdout = (
+        "/usr/share/zsh/functions\n/usr/local/share/zsh/site-functions\n"
+    )
 
     with patch("subprocess.run", return_value=mock_result):
         path = _zsh_install_path()
