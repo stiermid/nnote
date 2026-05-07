@@ -7,7 +7,7 @@ Shell completion
 Installing
 ----------
 
-Run once to write a completion script to the appropriate XDG directory for
+Run once to write a completion script to the appropriate directory for
 your shell:
 
 .. code-block:: bash
@@ -18,7 +18,7 @@ This does **not** modify any shell config file. The script is placed in an
 appropriate completion directory for your shell:
 
 - **bash** — ``~/.local/share/bash-completion/completions/nnote``
-- **zsh** — the first user-writable directory already in your ``$fpath``
+- **zsh** — the first directory under ``$HOME`` that is already in your ``$fpath``
 - **fish** — ``~/.config/fish/completions/nnote.fish``
 
 To inspect the script before installing, use:
