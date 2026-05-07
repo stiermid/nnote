@@ -1,12 +1,16 @@
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import pytest
 from click.shell_completion import CompletionItem
 from click.testing import CliRunner
 
 from nnote.cli import cli
-from nnote.completions import complete_note_titles, complete_directories
+from nnote.completions import (
+    complete_note_titles,
+    complete_directories,
+    _zsh_install_path,
+)
 from nnote.config import Config
 
 
@@ -127,7 +131,7 @@ def test_show_completion():
 def test_install_completion(tmp_path):
     script_file = tmp_path / "_nnote"
     with patch("nnote.completions._detect_shell", return_value="zsh"):
-        with patch("nnote.completions._COMPLETION_FILE", {"zsh": script_file}):
+        with patch("nnote.completions._zsh_install_path", return_value=script_file):
             result = CliRunner().invoke(cli, ["--install-completion"])
     assert result.exit_code == 0
     assert script_file.exists()
@@ -138,8 +142,48 @@ def test_install_completion_idempotent(tmp_path):
     script_file = tmp_path / "_nnote"
     script_file.write_text("# existing script\n")
     with patch("nnote.completions._detect_shell", return_value="zsh"):
-        with patch("nnote.completions._COMPLETION_FILE", {"zsh": script_file}):
+        with patch("nnote.completions._zsh_install_path", return_value=script_file):
             result = CliRunner().invoke(cli, ["--install-completion"])
     assert result.exit_code == 0
     assert "already installed" in result.output
     assert script_file.read_text() == "# existing script\n"
+
+
+def test_install_completion_bash(tmp_path):
+    script_file = tmp_path / "nnote"
+    with patch("nnote.completions._detect_shell", return_value="bash"):
+        with patch("nnote.completions._COMPLETION_FILE", {"bash": script_file}):
+            result = CliRunner().invoke(cli, ["--install-completion"])
+    assert result.exit_code == 0
+    assert script_file.exists()
+    assert "_NNOTE_COMPLETE" in script_file.read_text()
+
+
+# --- _zsh_install_path ---
+
+
+def test_zsh_install_path_picks_first_writable_home_fpath_dir(tmp_path):
+    user_dir = tmp_path / "zsh" / "functions"
+    user_dir.mkdir(parents=True)
+    system_dir = Path("/usr/share/zsh/functions")
+
+    mock_result = MagicMock()
+    mock_result.stdout = f"{system_dir}\n{user_dir}\n"
+
+    with patch("subprocess.run", return_value=mock_result):
+        with patch("nnote.completions.Path.home", return_value=tmp_path):
+            path = _zsh_install_path()
+
+    assert path == user_dir / "_nnote"
+
+
+def test_zsh_install_path_falls_back_to_xdg_when_no_home_fpath(tmp_path):
+    mock_result = MagicMock()
+    mock_result.stdout = (
+        "/usr/share/zsh/functions\n/usr/local/share/zsh/site-functions\n"
+    )
+
+    with patch("subprocess.run", return_value=mock_result):
+        path = _zsh_install_path()
+
+    assert path == Path("~/.local/share/zsh/site-functions/_nnote").expanduser()

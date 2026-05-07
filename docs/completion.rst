@@ -14,10 +14,11 @@ your shell:
 
    nnote --install-completion
 
-This does **not** modify any shell config file. The script is placed in:
+This does **not** modify any shell config file. The script is placed in an
+appropriate completion directory for your shell:
 
 - **bash** — ``~/.local/share/bash-completion/completions/nnote``
-- **zsh** — ``~/.local/share/zsh/site-functions/_nnote``
+- **zsh** — the first user-writable directory already in your ``$fpath``
 - **fish** — ``~/.config/fish/completions/nnote.fish``
 
 To inspect the script before installing, use:
