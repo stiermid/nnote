@@ -50,7 +50,7 @@ def _zsh_install_path():
     import subprocess
 
     result = subprocess.run(
-        ["zsh", "--no-rcs", "-c", "print -l $fpath"],
+        ["zsh", "-i", "-c", "print -l $fpath"],
         capture_output=True,
         text=True,
     )
