@@ -46,17 +46,43 @@ def show_completion_callback(ctx, param, value):
     ctx.exit()
 
 
+def _zsh_install_path():
+    import subprocess
+
+    result = subprocess.run(
+        ["zsh", "--no-rcs", "-c", "print -l $fpath"],
+        capture_output=True,
+        text=True,
+    )
+    home = Path.home()
+    for line in result.stdout.splitlines():
+        p = Path(line.strip())
+        if not p.is_absolute():
+            continue
+        try:
+            p.relative_to(home)
+        except ValueError:
+            continue
+        if p.exists() and p.is_dir():
+            return p / "_nnote"
+    return _COMPLETION_FILE["zsh"].expanduser()
+
+
 def install_completion_callback(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
     shell = _detect_shell()
-    script_file = _COMPLETION_FILE[shell].expanduser()
+    if shell == "zsh":
+        script_file = _zsh_install_path()
+    else:
+        script_file = _COMPLETION_FILE[shell].expanduser()
     if script_file.exists():
         click.echo(f"Completion already installed in {script_file}")
         ctx.exit()
     script_file.parent.mkdir(parents=True, exist_ok=True)
     script_file.write_text(_generate_script(shell, ctx.command))
     click.echo(f"Completion installed in {script_file}")
+    click.echo("Restart your shell for the change to take effect.")
     ctx.exit()
 
 
