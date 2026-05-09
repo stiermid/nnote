@@ -13,7 +13,14 @@ from ..completions import complete_directories
     help="Scope search to a subdirectory",
     shell_complete=complete_directories,
 )
-def search(query, directory):
+@click.option(
+    "-n",
+    "--limit",
+    default=None,
+    type=click.IntRange(min=1),
+    help="Maximum number of results to show",
+)
+def search(query, directory, limit):
     """Search notes by title and content."""
     config = Config.load()
 
@@ -28,6 +35,8 @@ def search(query, directory):
         raise click.ClickException(f"Directory not found: {root}")
 
     results = search_notes(root, query)
+    if limit is not None:
+        results = results[:limit]
 
     if not results:
         click.echo("No notes found.")
