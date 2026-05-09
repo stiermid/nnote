@@ -6,9 +6,7 @@ from ..completions import complete_note_titles, complete_directories
 
 
 @click.command()
-@click.argument(
-    "title", required=False, default=None, shell_complete=complete_note_titles
-)
+@click.argument("titles", nargs=-1, shell_complete=complete_note_titles)
 @click.option(
     "-d",
     "--directory",
@@ -16,8 +14,8 @@ from ..completions import complete_note_titles, complete_directories
     help="Subdirectory within notes dir",
     shell_complete=complete_directories,
 )
-def drop(title, directory):
-    """Remove a note or a directory."""
+def drop(titles, directory):
+    """Remove one or more notes or a directory."""
     config = Config.load()
 
     if config.notes_dir is None:
@@ -25,15 +23,18 @@ def drop(title, directory):
             "Notes directory not configured. Run `nnote init` first."
         )
 
-    if title is None and directory is None:
+    if not titles and directory is None:
         raise click.UsageError("Provide a note title, a directory (-d), or both.")
 
-    if title:
-        note_path = resolve_note_path(config, title, directory)
-        if not note_path.exists():
-            raise click.ClickException(f"Note not found: {note_path}")
-        note_path.unlink()
-        click.echo(f"Removed: {note_path.name}")
+    if titles:
+        paths = [resolve_note_path(config, t, directory) for t in titles]
+        missing = [p for p in paths if not p.exists()]
+        if missing:
+            names = ", ".join(p.name for p in missing)
+            raise click.ClickException(f"Note(s) not found: {names}")
+        for path in paths:
+            path.unlink()
+            click.echo(f"Removed: {path.name}")
     else:
         dir_path = config.notes_dir / directory
         if not dir_path.exists():
