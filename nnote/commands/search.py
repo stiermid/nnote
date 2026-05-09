@@ -20,8 +20,25 @@ from ..completions import complete_directories
     type=click.IntRange(min=1),
     help="Maximum number of results to show",
 )
-def search(query, directory, limit):
+@click.option(
+    "--title-only",
+    is_flag=True,
+    default=False,
+    help="Only show notes matched by title",
+)
+@click.option(
+    "--content-only",
+    is_flag=True,
+    default=False,
+    help="Only show notes matched by content",
+)
+def search(query, directory, limit, title_only, content_only):
     """Search notes by title and content."""
+    if title_only and content_only:
+        raise click.UsageError(
+            "--title-only and --content-only are mutually exclusive."
+        )
+
     config = Config.load()
 
     if config.notes_dir is None:
@@ -35,6 +52,10 @@ def search(query, directory, limit):
         raise click.ClickException(f"Directory not found: {root}")
 
     results = search_notes(root, query)
+    if title_only:
+        results = [r for r in results if r.title_match]
+    elif content_only:
+        results = [r for r in results if r.matching_lines]
     if limit is not None:
         results = results[:limit]
 
