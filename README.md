@@ -7,7 +7,7 @@
 	<img src="https://repology.org/badge/vertical-allrepos/nnote.svg" alt="Packaging status" align="right">
 </a>
 
-A minimal CLI note-taking tool. Notes are plain files stored in a directory of your choice.
+A plain, file-based note-taking CLI.
 
 ## Installation
 
@@ -35,20 +35,7 @@ Prompts for a notes directory (default: `~/nnotes`) and a default editor. Config
 
 ## Documentation
 
-Full documentation is published at **https://stiermid.github.io/nnote/**.
-
-Command reference (also browsable in this repo):
-
-- [`new`](docs/commands/new.rst) — create a note (or a subdirectory)
-- [`view`](docs/commands/view.rst) — print a note to stdout
-- [`edit`](docs/commands/edit.rst) — open an existing note in the editor
-- [`list`](docs/commands/list.rst) — display notes as a tree
-- [`drop`](docs/commands/drop.rst) — remove a note or directory
-- [`move`](docs/commands/move.rst) — rename or relocate a note
-- [`backup`](docs/commands/backup.rst) — export notes to a `.tar.gz` archive
-- [`search`](docs/commands/search.rst) — search notes by title and content
-
-Config file format: [docs/configuration.rst](docs/configuration.rst).
+Full documentation is published at [stiermid.github.io/nnote](https://stiermid.github.io/nnote/).
 
 ## License
 
