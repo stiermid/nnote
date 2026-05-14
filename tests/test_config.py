@@ -1,7 +1,7 @@
 import os
 import pytest
 from pathlib import Path
-from nnote.config import Config
+from nnote.config import Config, get_config_path
 
 
 def test_load_missing_file_returns_empty(tmp_path):
@@ -104,3 +104,13 @@ def test_backup_dir_property_expands_home(tmp_path):
 def test_backup_dir_none_when_not_set(tmp_path):
     config = Config.load(tmp_path / "config.yaml")
     assert config.backup_dir is None
+
+
+def test_get_config_path_uses_xdg_config_home(tmp_path, monkeypatch):
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
+    assert get_config_path() == tmp_path / "nnote" / "config.yaml"
+
+
+def test_get_config_path_falls_back_to_dot_config(monkeypatch):
+    monkeypatch.delenv("XDG_CONFIG_HOME", raising=False)
+    assert get_config_path() == Path.home() / ".config" / "nnote" / "config.yaml"

@@ -14,7 +14,8 @@ DEFAULT_NOTES_DIR = Path.home() / "nnotes"
 
 def get_config_path() -> Path:
     """Return the config file path following XDG Base Directory spec."""
-    config_home = Path.home() / ".config"
+    xdg = os.environ.get("XDG_CONFIG_HOME", "")
+    config_home = Path(xdg) if xdg else Path.home() / ".config"
     return config_home / APP_NAME / CONFIG_FILE_NAME
 
 
