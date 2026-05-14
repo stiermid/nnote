@@ -27,3 +27,15 @@ def test_resolve_note_path_raises_when_notes_dir_not_set(tmp_path):
     config = Config.load(tmp_path / "config.yaml")
     with pytest.raises(click.ClickException):
         resolve_note_path(config, "mytitle", None)
+
+
+def test_resolve_note_path_rejects_traversal_in_title(tmp_path):
+    config = _config_with_notes_dir(tmp_path)
+    with pytest.raises(click.ClickException, match="Invalid path"):
+        resolve_note_path(config, "../../etc/passwd", None)
+
+
+def test_resolve_note_path_rejects_traversal_in_directory(tmp_path):
+    config = _config_with_notes_dir(tmp_path)
+    with pytest.raises(click.ClickException, match="Invalid path"):
+        resolve_note_path(config, "note", "../../etc")
