@@ -40,6 +40,14 @@ def test_get_missing_key_returns_default(tmp_path):
     assert config.get("missing", default="fallback") == "fallback"
 
 
+def test_get_explicit_null_value(tmp_path):
+    cfg_file = tmp_path / "config.yaml"
+    cfg_file.write_text("key: null\n")
+    config = Config.load(cfg_file)
+    assert config.get("key") is None
+    assert config.get("key", default="fallback") is None
+
+
 def test_get_nested_key(tmp_path):
     cfg_file = tmp_path / "config.yaml"
     cfg_file.write_text("a:\n  b: value\n")
