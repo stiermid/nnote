@@ -44,14 +44,16 @@ class Config:
         with self._path.open("w", encoding="utf-8") as f:
             yaml.dump(self._data, f, default_flow_style=False, allow_unicode=True)
 
+    _MISSING = object()
+
     def get(self, *keys: str, default: Any = None) -> Any:
         """Retrieve a nested value by key path, returning default if missing."""
         node = self._data
         for key in keys:
             if not isinstance(node, dict):
                 return default
-            node = node.get(key, default)
-            if node is default:
+            node = node.get(key, self._MISSING)
+            if node is self._MISSING:
                 return default
         return node
 
