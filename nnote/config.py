@@ -40,6 +40,10 @@ class Config:
 
         return cls(path, data)
 
+    @property
+    def path(self) -> Path:
+        return self._path
+
     def save(self) -> None:
         """Write current config data to disk atomically."""
         fd, tmp = tempfile.mkstemp(dir=self._path.parent, suffix=".tmp")
