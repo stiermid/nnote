@@ -10,7 +10,11 @@ def resolve_note_path(config: Config, title: str, directory: str | None) -> Path
             "Notes directory not configured. Run `nnote init` first."
         )
     base = config.notes_dir / directory if directory else config.notes_dir
-    return base / title
+    resolved = (base / title).resolve()
+    notes_root = config.notes_dir.resolve()
+    if not resolved.is_relative_to(notes_root):
+        raise click.ClickException("Invalid path: must stay within notes directory.")
+    return resolved
 
 
 def open_in_editor(config: Config, path: Path) -> None:
