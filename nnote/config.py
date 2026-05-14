@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from .__version__ import APP_NAME
 import os
+import tempfile
 import yaml
 from pathlib import Path
 from typing import Any
@@ -40,9 +41,15 @@ class Config:
         return cls(path, data)
 
     def save(self) -> None:
-        """Write current config data to disk."""
-        with self._path.open("w", encoding="utf-8") as f:
-            yaml.dump(self._data, f, default_flow_style=False, allow_unicode=True)
+        """Write current config data to disk atomically."""
+        fd, tmp = tempfile.mkstemp(dir=self._path.parent, suffix=".tmp")
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                yaml.dump(self._data, f, default_flow_style=False, allow_unicode=True)
+            Path(tmp).replace(self._path)
+        except:
+            os.unlink(tmp)
+            raise
 
     _MISSING = object()
 
