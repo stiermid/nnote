@@ -33,7 +33,7 @@ def init():
         config.set("backup_dir", value=str(backup_dir))
     config.save()
 
-    click.echo(f"Config saved to {config._path}")
+    click.echo(f"Config saved to {config.path}")
     click.echo(f"Notes directory: {notes_dir}")
     click.echo(f"Editor: {editor}")
     if backup_dir_raw:
