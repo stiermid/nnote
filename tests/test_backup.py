@@ -78,9 +78,6 @@ def test_backup_include_config(env, tmp_path):
 
         def path_side_effect(*args):
             if args == ("~/.config/nnote/config.yaml",):
-                p = real_path(fake_config)
-                p_expanded = real_path(fake_config)
-
                 # return a mock that .expanduser() returns real fake_config path
                 class FakeConfigPath:
                     def expanduser(self):
