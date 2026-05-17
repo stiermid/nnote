@@ -53,6 +53,7 @@ def _zsh_install_path():
         ["zsh", "-i", "-c", "print -l $fpath"],
         capture_output=True,
         text=True,
+        check=False,
     )
     home = Path.home()
     for line in result.stdout.splitlines():
