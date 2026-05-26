@@ -9,7 +9,7 @@ description = "A plain, file-based note-taking CLI"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 authors = [
-    { name = "Agil Mammadov", email = "mammadovagil@tutamail.com" }
+    { name = "Agil Mammadov", email = "mammadovagil@proton.me" }
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
