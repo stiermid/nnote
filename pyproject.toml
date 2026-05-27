@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "nnote"
-version = "0.3.3"
+version = "0.3.4"
 description = "A plain, file-based note-taking CLI"
 readme = "README.md"
 license = "GPL-3.0-or-later"
