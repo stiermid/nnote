@@ -22,4 +22,4 @@ def open_in_editor(config: Config, path: Path) -> None:
         raise click.ClickException(
             "No editor configured. Set 'editor' in config or the $EDITOR environment variable."
         )
-    subprocess.call([config.editor, str(path)])
+    subprocess.run([config.editor, str(path)], check=False)
