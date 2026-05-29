@@ -52,7 +52,7 @@ class Config:
             with os.fdopen(fd, "w", encoding="utf-8") as f:
                 yaml.dump(self._data, f, default_flow_style=False, allow_unicode=True)
             Path(tmp).replace(self._path)
-        except:
+        except Exception:
             os.unlink(tmp)
             raise
 
