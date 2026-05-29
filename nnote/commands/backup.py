@@ -41,7 +41,7 @@ def backup(output_path, directory, include_config, dry_run, quiet):
     if not root.exists():
         raise click.ClickException(f"Directory not found: {root}")
 
-    config_path = Path("~/.config/nnote/config.yaml").expanduser()
+    config_path = config.path
 
     if dry_run:
         count = 0
