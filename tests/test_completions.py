@@ -2,7 +2,6 @@ from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 import pytest
-from click.shell_completion import CompletionItem
 from click.testing import CliRunner
 
 from nnote.cli import cli

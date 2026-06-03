@@ -1,5 +1,3 @@
-import pytest
-from pathlib import Path
 from nnote.search import search_notes, highlight, _score_title
 
 

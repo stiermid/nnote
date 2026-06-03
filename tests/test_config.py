@@ -1,4 +1,3 @@
-import os
 import pytest
 from pathlib import Path
 from nnote.config import Config, get_config_path

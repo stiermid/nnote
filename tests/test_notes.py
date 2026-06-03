@@ -1,6 +1,5 @@
 import click
 import pytest
-from pathlib import Path
 from nnote.config import Config
 from nnote.notes import resolve_note_path
 
